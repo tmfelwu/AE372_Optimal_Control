@@ -20,7 +20,7 @@ figure
 surf(X,Y,Z)
 colorbar
 figure
-levels = [ 2000:-100:500 500:-50:-200 -200:-30:-500 -500:-100:-2000];
+levels = [ 2000:-100:500 500:-50:-200 -200:-50:-500 -500:-100:-2000];
 contour(X,Y,Z,levels)
 colorbar
 
@@ -28,5 +28,43 @@ colorbar
 A = [ 1 1 2 1; 1 -2 0 -1 ];
 b = [1 -2]';
 minimizer = A'* inv( A* A') * b
+ 
+%% Q5 alternate
+A = [
+2 0 0 0 1 1;
+0 2 0 0 1 -2;
+0 0 2 0 2 0;
+0 0 0 2 1 -1;
+1 1 2 1 0 0 ;
+1 -2 0 -1 0 0;
+];
 
+b = [0 0 0 0 1 -2 ]';
+A\b
 %% Q6
+x = [-5:0.1:5];
+y = x;
+[X,Y] = meshgrid(x,y);
+Z = X.^2 + Y.^2;
+Ellipse = X.^2 + 2 * Y.^2 - 1;
+contour(X,Y,Z,20)
+colorbar
+hold on 
+contour(X,Y,Ellipse,[0 0],'r--')
+grid on
+pbaspect([1 1 1])
+
+%% Q7
+x = [-100:1:100];
+y = x;
+[X,Y] = meshgrid(x,y);
+Z = (X-1).^2 + Y -2;
+Line = Y - X - 1;
+contour(X,Y,Z,20)
+colorbar
+hold on 
+contour(X,Y,Line,[0 0],'r--')
+Inequality = X + Y - 2;
+contour(X,Y, Inequality, [-100:0.1:0])
+grid on
+pbaspect([1 1 1])
