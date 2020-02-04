@@ -55,7 +55,7 @@ grid on
 pbaspect([1 1 1])
 
 %% Q7
-x = [-100:1:100];
+x = [-10:0.1:10];
 y = x;
 [X,Y] = meshgrid(x,y);
 Z = (X-1).^2 + Y -2;
