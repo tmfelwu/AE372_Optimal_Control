@@ -1,4 +1,10 @@
-%DKirk 6.2 An illustrative example
+%Missile Guidance
+
+mass = 240 ; %kg
+S = 0.0707 ; 
+T = 24000  ; % Newton
+Cd = 0.5   ;
+Cl = 3.12  ;
 
 time = 0:0.1:1;
 rtime = 1:-0.1:0;
@@ -37,9 +43,11 @@ end
 % Plotting the optimal control
 plot(time, -0.5806 * exp(time), 'r--')
 
-function dx = forward(t,x,ut,u)
-u = interp1(ut,u,t);
-dx = -x + u;
+function dx = forward(gamma,x,ut,u)
+u = interp1(ut,u,gamma);
+denom = (Sw * M^2 * Cl - cos(gamma) + Tw * sin(alpha) );
+dx(1) = ( - Sw * M^2 * Cd - sin(gamma) + Tw * cos(gamma)) * M / denom;
+dx(2) = a * M / ( g * denom);
 end
 
 function dl = backward(t,l)
