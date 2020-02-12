@@ -21,7 +21,8 @@ alpha = alphat * 0 + 1;
 
 for j=1:20
 % Step 2 Integrate the state equation forward
-[xt, x] = rk4( 0, -180, -stepsize, [0.5 0], @(t,x) forward(t,x,alphat, alpha, Sw, Cl, Tw, Cd, a, g) );
+% initial conditions are Mach number, time, x, height
+[xt, x] = rk4( 0, -180, -stepsize, [0.5 0 0 5000], @(t,x) forward(t,x,alphat, alpha, Sw, Cl, Tw, Cd, a, g) );
 
 % Step 3 Find final conditions and backward integrate the costate equation
 M = x(:,1);
@@ -51,6 +52,8 @@ M = x(1);
 denom = (Sw * M^2 * Cl - cos(gamma) + Tw * sin(alpha) );
 dx(1) = ( - Sw * M^2 * Cd - sin(gamma) + Tw * cos(gamma)) * M / denom;
 dx(2) = (M*a)/(g*(Cl*Sw*M^2 - cos(gamma) + Tw*sin(alpha)));
+dx(3) = 
+dx(4) =
 dx = dx';
 end
 
