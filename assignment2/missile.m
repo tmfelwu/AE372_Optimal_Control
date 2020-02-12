@@ -18,7 +18,7 @@ q = 1;
 % Step  1 Assume the control history
 alpha = zeros(size(alphat)) - (85) * pi /180 ;
 
-for j=1:20
+for j=1:1
 % Step 2 Integrate the state equation forward
 % initial conditions are Mach number, time, x, height
 [xt, x] = rk4( 0, -pi, -stepsize, [0.5 0 5000 0], @(t,x) forward(t,x,alphat, alpha, Sw, Cl, Tw, Cd, a, g) );
@@ -26,10 +26,11 @@ for j=1:20
 % xt = [0:-stepsize:-pi];
 % Step 3 Find final conditions and backward integrate the costate equation
 M = x(:,1);
+time = x(:,2);
 l1 = [q*(M(end)-0.8), 0, 0, 0];
-%[lt,l] = rk4( -pi,0 , stepsize, l1 ,@(t,l) backward(t,l, a,g,Cl, Sw, Tw, Cd, alphat, alpha, xt, x ));
-l = ode4(@(t,l) backward(t,l, a,g,Cl, Sw, Tw, Cd, alphat, alpha, xt, x ), [-pi:stepsize:0], l1);
-lt = [-pi:stepsize:0];
+[lt,l] = rk4( -pi,0 , stepsize, l1 ,@(t,l) backward(t,l, a,g,Cl, Sw, Tw, Cd, alphat, alpha, xt, x ));
+%l = ode4(@(t,l) backward(t,l, a,g,Cl, Sw, Tw, Cd, alphat, alpha, xt, x ), [-pi:stepsize:0], l1);
+%lt = [-pi:stepsize:0];
 
 % Step 4 Verify if the control equation is satisfied
 lambda1 = flip(l(:,1));
@@ -37,16 +38,19 @@ lambda2 = flip(l(:,2));
 lambda3 = flip(l(:,3));
 lambda4 = flip(l(:,4));
 dHdAlpha = (M*Tw.*lambda1.*cos(alpha').*(Cd*Sw*M.^2 + sin(gamma') - Tw*cos(alpha')))./ ...
-    (Cl*Sw.*M.^2 - cos(gamma') + Tw*sin(alpha')).^2 - (M*Tw*a.*cos(alpha'))./ ...
+    (Cl*Sw*M.^2 - cos(gamma') + Tw*sin(alpha')).^2 - (M*Tw*a.*cos(alpha'))./ ...
     (g*(Cl*Sw*M.^2 - cos(gamma') + Tw*sin(alpha')).^2) - (M*Tw.*lambda1.*sin(alpha'))./ ...
     (Cl*Sw*M.^2 - cos(gamma') + Tw*sin(alpha')) - (M*Tw*a.*lambda2.*cos(alpha'))./ ...
     (g*(Cl*Sw*M.^2 - cos(gamma') + Tw*sin(alpha')).^2) - (M.^2*Tw*a^2.*lambda3.*cos(alpha').*sin(gamma'))./ ...
     (g*(Cl*Sw*M.^2 - cos(gamma') + Tw*sin(alpha')).^2) - (M.^2*Tw*a^2.*lambda4.*cos(alpha').*cos(gamma'))./ ...
     (g*(Cl*Sw*M.^2 - cos(gamma') + Tw*sin(alpha')).^2);
- 
-tau = 0.1;
-plot(gamma, alpha);
-hold on
+
+dotProduct = dHdAlpha' * dHdAlpha;
+alpha = 40;
+J = 0.5*q*(M(end)-0.8) + time(end);
+tau = ((alpha/100)* J)/(trapz(dotProduct) * time(end));
+%plot(x(:,2), alpha);
+%hold on
 alpha = alpha - tau * dHdAlpha';
 end
 
