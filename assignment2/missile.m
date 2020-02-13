@@ -51,12 +51,12 @@ for qit=1:length(q)
             (g*(Cl*Sw*M.^2 - cos(gamma') + Tw*sin(alpha')).^2) - (M.^2*Tw*a^2.*lambda4.*cos(alpha').*cos(gamma'))./ ...
             (g*(Cl*Sw*M.^2 - cos(gamma') + Tw*sin(alpha')).^2);
         percentage_reduction = 5;
-        J(qit,j) = 0.5*q(qit)*(M(end)-0.8) + time(end);
+        J(qit,j) = 0.5*q(qit)*(M(end)-0.8)^2 + time(end);
         denominator = trapz(time,dHdAlpha.^2);
         tau = ((percentage_reduction/100)* J(qit,j))/(denominator);
-        plot(x(:,4), x(:,3));
-        hold on
-        alpha = alpha - tau * dHdAlpha';
+%         plot(x(:,4), x(:,3));
+%         hold on
+        alpha = alpha + tau * dHdAlpha';
         j = j+1;
     end
     
@@ -67,7 +67,9 @@ for qit=1:length(q)
     hold on
 end
 legend
-
+xlabel("Horizontal Distance (m)")
+ylabel("Height (m)")
+title("Height vs Horizontal Distance for various q values")
 % Plotting the optimal control
 % plot(time, -0.5806 * exp(time), 'r--')
 

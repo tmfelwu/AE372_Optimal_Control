@@ -29,7 +29,7 @@ for j=1:100
    plot(time, -state_history(:,2,j+1));
    hold on
 end
-hold off
+
 
 function dz = homogeneous(t, z,time, x)
     x_ = interp1(time,x(:,1),t);
