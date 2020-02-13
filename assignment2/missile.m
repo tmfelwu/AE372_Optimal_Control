@@ -50,13 +50,11 @@ for qit=1:length(q)
             (g*(Cl*Sw*M.^2 - cos(gamma') + Tw*sin(alpha')).^2) - (M.^2*Tw*a^2.*lambda3.*cos(alpha').*sin(gamma'))./ ...
             (g*(Cl*Sw*M.^2 - cos(gamma') + Tw*sin(alpha')).^2) - (M.^2*Tw*a^2.*lambda4.*cos(alpha').*cos(gamma'))./ ...
             (g*(Cl*Sw*M.^2 - cos(gamma') + Tw*sin(alpha')).^2);
-        percentage_reduction = 5;
+        percentage_reduction = 10;
         J(qit,j) = 0.5*q(qit)*(M(end)-0.8) + time(end);
         denominator = trapz(time,dHdAlpha.^2);
-        tau = ((percentage_reduction/100)* J(qit,j))/(denominator);
-        plot(x(:,4), x(:,3));
-        hold on
-        alpha = alpha - tau * dHdAlpha';
+        tau = ((percentage_reduction/100)* abs(J(qit,j)) )/(denominator);
+        alpha = alpha + tau * dHdAlpha';
         j = j+1;
     end
     

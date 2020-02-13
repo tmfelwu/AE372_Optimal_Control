@@ -24,7 +24,8 @@ xlabel('Time')
 ylabel('Angle of attack')
 hold off
 
-%% Plot for Mach Numer
+%% Plot for Mach Numer vs time
+hold off
 for qit = 1:3
     plot(t_history(qit,:), M_history(qit,:), 'DisplayName', sprintf("q = %d",q(qit)) );
     hold on
