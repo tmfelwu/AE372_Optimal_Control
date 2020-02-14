@@ -73,14 +73,8 @@ for qit=1:length(q)
         sprintf("%d : %f : Cost : %f ; dHdAlpha: %f",j,M(end),J(qit,j), dHdAlpha'*dHdAlpha)
         denominator = dHdAlpha'*dHdAlpha;
         tau = ((percentage_reduction/100)* abs(J(qit,j)) )/(denominator);
-        alpha = alpha + tau * dHdAlpha';        x = ode4(@(t,x) forward(t,x,alphat, alpha, Sw, Cl, Tw, Cd, a, g), [0:-stepsize:-pi], [0.5 0 5000 0]);
-        xt = [0:-stepsize:-pi];
-        x = ode4(@(t,x) forward(t,x,alphat, alpha, Sw, Cl, Tw, Cd, a, g), [0:-stepsize:-pi], [0.5 0 5000 0]);
-        xt = [0:-stepsize:-pi];
-
-        j = j+1;        x = ode4(@(t,x) forward(t,x,alphat, alpha, Sw, Cl, Tw, Cd, a, g), [0:-stepsize:-pi], [0.5 0 5000 0]);
-        xt = [0:-stepsize:-pi];
-
+        alpha = alpha + tau * dHdAlpha'; 
+        j = j+1;       
     end
     
     M_history(qit,:) = x(:,1)';
@@ -90,7 +84,9 @@ for qit=1:length(q)
     hold on
 end
 legend
-
+xlabel("Horizontal Distance (m)")
+ylabel("Height (m)")
+title("Height vs Horizontal Distance for various q values")
 % Plotting the optimal control
 % plot(time, -0.5806 * exp(time), 'r--')
 
