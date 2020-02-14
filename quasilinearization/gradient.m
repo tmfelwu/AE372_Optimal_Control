@@ -5,7 +5,7 @@ ut = gradtime;
 % Step  1 Assume the control history
 u = ut * 0 + 1;
 
-for j=1:1000
+for j=1:100
 % Step 2 Integrate the state equation forward
 % x_dot = -x + u 
 % x(0) = 4

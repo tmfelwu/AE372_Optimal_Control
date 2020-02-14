@@ -14,11 +14,13 @@ for j=1:100
    % Step 2 Solve the leanerized system homogeneous system with
    % x(t_0) = 0 and p(t_0) = 1
    ic_h = [0 1];
-   h = ode4(@(t,y) homogeneous(t,y,time, state_history(:,:,j)), time, ic_h);
+   %h = ode4(@(t,y) homogeneous(t,y,time, state_history(:,:,j)), time, ic_h);
+   [~, h] = rk4(0,1,0.01,ic_h,@(t,y) homogeneous(t,y,time, state_history(:,:,j)));
    
    % Step 3 Solve the system for particular integral
    ic_p = [10 0];
-   p = ode4(@(t,y) particular(t,y,time,  state_history(:,:,j)), time, ic_p);
+   %p = ode4(@(t,y) particular(t,y,time,  state_history(:,:,j)), time, ic_p);
+   [~, p] = rk4(0,1,0.01,ic_p,@(t,y) particular(t,y,time,  state_history(:,:,j)));
    
    % Step 4 Satisfy the boundary conditions
    p_h_ = h(:,2); 
