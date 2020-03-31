@@ -29,18 +29,18 @@ for qit=1:length(q)
     while j <1000
         % Step 2 Integrate the state equation forward
         % initial conditions are Mach number, time, height, x
-%         [xt, x] = rk4( 0, -pi, -stepsize, [0.5 0 5000 0], @(t,x) forward(t,x,alphat, alpha, Sw, Cl, Tw, Cd, a, g) );
+        [xt, x] = rk4( 0, -pi, -stepsize, [0.5 0 5000 0], @(t,x) forward(t,x,alphat, alpha, Sw, Cl, Tw, Cd, a, g) );
         
-        x = ode4(@(t,x) forward(t,x,alphat, alpha, Sw, Cl, Tw, Cd, a, g), [0:-stepsize:-pi], [0.5 0 5000 0]);
-        xt = [0:-stepsize:-pi];
+        %x = ode4(@(t,x) forward(t,x,alphat, alpha, Sw, Cl, Tw, Cd, a, g), [0:-stepsize:-pi], [0.5 0 5000 0]);
+        %xt = [0:-stepsize:-pi];
         
         % Step 3 Find final conditions and backward integrate the costate equation
         M = x(:,1);
         time = x(:,2);
         l1 = [q(qit)*(M(end)-0.8), 0, 0, 0];
-%         [lt,l] = rk4( -pi,0 , stepsize, l1 ,@(t,l) backward(t,l, a,g,Cl, Sw, Tw, Cd, alphat, alpha, xt, x ));
-        l = ode4(@(t,l) backward(t,l, a,g,Cl, Sw, Tw, Cd, alphat, alpha, xt, x ), [-pi:stepsize:0], l1);
-        lt = [-pi:stepsize:0]';
+        [lt,l] = rk4( -pi,0 , stepsize, l1 ,@(t,l) backward(t,l, a,g,Cl, Sw, Tw, Cd, alphat, alpha, xt, x ));
+        %l = ode4(@(t,l) backward(t,l, a,g,Cl, Sw, Tw, Cd, alphat, alpha, xt, x ), [-pi:stepsize:0], l1);
+        %lt = [-pi:stepsize:0]';
 
         % Step 4 Verify if the control equation is satisfied
         lambda1 = flip(l(:,1));
@@ -66,14 +66,14 @@ for qit=1:length(q)
 %  
 %         end
         
-        percentage_reduction = 20;
+        percentage_reduction = 1;
         %J(qit,j) = 0.5*q(qit)*(M(end)-0.8)^2 + time(end);
         j_integ = a*M./(g*(Sw*M.^2*Cl - cos(gamma') + Tw * sin(alpha')));
         J(qit,j) = 0.5*q(qit)*(M(end)-0.8)^2 + trapz(gamma,j_integ');
         sprintf("%d : %f : Cost : %f ; dHdAlpha: %f",j,M(end),J(qit,j), dHdAlpha'*dHdAlpha)
         denominator = dHdAlpha'*dHdAlpha;
-        tau = ((percentage_reduction/100)* abs(J(qit,j)) )/(denominator);
-        alpha = alpha + tau * dHdAlpha'; 
+        tau = ((percentage_reduction/100)* abs(J(qit,j)) )/trapz(gamma,dHdAlpha.^2);
+        alpha = alpha - tau * dHdAlpha'; 
         j = j+1;       
     end
     
